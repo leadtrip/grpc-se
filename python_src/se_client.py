@@ -2,12 +2,14 @@ import grpc
 import SE_pb2
 import SE_pb2_grpc
 
+GRPC_PORT = 50052
 
 def run():
-    with grpc.insecure_channel('localhost:50052') as channel:
+    with grpc.insecure_channel(f"localhost:{GRPC_PORT}") as channel:
         stub = SE_pb2_grpc.SecretEscapesStub(channel)
         print("1. Fetch one SE sale - Unary")
         print("2. Fetch multiple SE sales - server streaming")
+
 
         rpc_call = input("Which rpc call do you wish to run? ")
 

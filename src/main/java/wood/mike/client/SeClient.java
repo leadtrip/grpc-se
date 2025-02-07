@@ -8,7 +8,6 @@ import wood.mike.SeSaleRequest;
 import wood.mike.SecretEscapesGrpc;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 

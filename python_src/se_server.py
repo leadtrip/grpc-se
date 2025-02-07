@@ -3,6 +3,7 @@ from concurrent import futures
 import grpc
 import SE_pb2
 import SE_pb2_grpc
+from se_client import GRPC_PORT
 
 
 class SeServer(SE_pb2_grpc.SecretEscapesServicer):
@@ -27,7 +28,7 @@ class SeServer(SE_pb2_grpc.SecretEscapesServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     SE_pb2_grpc.add_SecretEscapesServicer_to_server(SeServer(), server)
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port(f"[::]:{GRPC_PORT}")
     server.start()
     server.wait_for_termination()
 
