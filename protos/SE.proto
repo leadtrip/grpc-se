@@ -16,7 +16,7 @@ service SecretEscapes {
 }
 
 message SeSaleRequest {
-  string id = 1;
+  int32 id = 1;
 }
 
 message SeSaleRangeRequest {
@@ -25,7 +25,7 @@ message SeSaleRangeRequest {
 }
 
 message SeSaleReply {
-  string id = 1;
+  int32 id = 1;
   string url_slug = 2;
   string start = 3;
   string end = 4;

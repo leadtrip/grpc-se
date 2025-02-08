@@ -6,7 +6,6 @@ import io.grpc.stub.StreamObserver;
 import wood.mike.*;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +44,11 @@ public class SeClient {
     }
 
     private String unaryExample() {
-        var seResponse = blockingStub.getSeSale(SeSaleRequest.newBuilder().setId("A1234").build());
+        var seResponse =
+                blockingStub.getSeSale(
+                        SeSaleRequest
+                        .newBuilder()
+                        .setId(1).build());
         return String.format("Server reply: %s", seResponse);
     }
 
@@ -68,7 +71,7 @@ public class SeClient {
             @Override
             public void onNext(BatchSeSaleReply batchSeSaleReply) {
                 batchSeSaleReply.getRepliesList().forEach(req ->
-                        System.out.println("SE sale: " + req.getId())
+                        System.out.println("SE sale: " + req)
                 );
             }
 
@@ -90,7 +93,7 @@ public class SeClient {
 
         Stream.of(1,2,3,4,5).map(id ->
             SeSaleRequest.newBuilder()
-                .setId("A"+id)
+                .setId(id)
                 .build()
         ).forEach(requestObserver::onNext);
 
