@@ -10,6 +10,9 @@ service SecretEscapes {
 
   // server streaming
   rpc GetAllSeSales(SeSaleRangeRequest) returns (stream SeSaleReply);
+
+  // client streaming
+  rpc GetBatchedSeSales(stream SeSaleRequest) returns (BatchSeSaleReply);
 }
 
 message SeSaleRequest {
@@ -26,4 +29,8 @@ message SeSaleReply {
   string url_slug = 2;
   string start = 3;
   string end = 4;
+}
+
+message BatchSeSaleReply {
+  repeated SeSaleReply replies = 1;
 }
