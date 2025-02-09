@@ -13,6 +13,9 @@ service SecretEscapes {
 
   // client streaming
   rpc GetBatchedSeSales(stream SeSaleRequest) returns (BatchSeSaleReply);
+
+  // bidirectional streaming
+  rpc CustomizePackage(stream PackageRequest) returns (stream PackageResponse);
 }
 
 message SeSaleRequest {
@@ -33,4 +36,20 @@ message SeSaleReply {
 
 message BatchSeSaleReply {
   repeated SeSaleReply replies = 1;
+}
+
+message PackageRequest {
+  string user_id = 1;
+  string selection_type = 2;  // e.g., "flight", "hotel", "tour"
+  string selection_id = 3;    // ID of the selected option
+  int32 quantity = 4;         // For things like number of nights, tickets, etc.
+}
+
+// Response message with availability and price feedback
+message PackageResponse {
+  string selection_type = 1;
+  string selection_id = 2;
+  bool available = 3;
+  double price = 4;
+  string message = 5;  // e.g., "Available", "Sold out", "Price updated"
 }

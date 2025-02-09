@@ -36,6 +36,7 @@ public class SeClient {
             case 1 -> unaryExample();
             case 2 -> serverStreamingExample();
             case 3 -> clientStreamingExample();
+            case 4 -> bidirectionalStreamingExample();
             default -> throw new IllegalStateException("Unexpected value");
         };
 
@@ -104,6 +105,72 @@ public class SeClient {
         return "Done";
     }
 
+    private String bidirectionalStreamingExample() throws InterruptedException {
+        // Latch to wait for the server responses before shutting down
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // Handle server responses
+        StreamObserver<PackageRequest> requestObserver =
+                nonBlockingStub.customizePackage(new StreamObserver<PackageResponse>() {
+            @Override
+            public void onNext(PackageResponse response) {
+                System.out.println("Received response:");
+                System.out.println("Type: " + response.getSelectionType());
+                System.out.println("ID: " + response.getSelectionId());
+                System.out.println("Available: " + response.getAvailable());
+                System.out.println("Price: $" + response.getPrice());
+                System.out.println("Message: " + response.getMessage());
+                System.out.println("----------------------------------");
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.err.println("Error from server: " + t.getMessage());
+                latch.countDown();
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("Server completed sending responses.");
+                latch.countDown();
+            }
+        });
+
+        PackageRequest flightRequest = PackageRequest.newBuilder()
+                .setUserId("user123")
+                .setSelectionType("flight")
+                .setSelectionId("FL123")
+                .setQuantity(1)
+                .build();
+
+        PackageRequest hotelRequest = PackageRequest.newBuilder()
+                .setUserId("user123")
+                .setSelectionType("hotel")
+                .setSelectionId("HT456")
+                .setQuantity(3)
+                .build();
+
+        PackageRequest tourRequest = PackageRequest.newBuilder()
+                .setUserId("user123")
+                .setSelectionType("tour")
+                .setSelectionId("TR789")
+                .setQuantity(2)
+                .build();
+
+        System.out.println("Sending package customization requests...");
+        requestObserver.onNext(flightRequest);
+        requestObserver.onNext(hotelRequest);
+        requestObserver.onNext(tourRequest);
+
+        // Mark the end of requests
+        requestObserver.onCompleted();
+
+        // Wait until server finishes sending responses
+        latch.await(5, TimeUnit.SECONDS);
+
+        return "Done";
+    }
+
     private void close() {
         scanner.close();
         channel.shutdown();
@@ -111,7 +178,12 @@ public class SeClient {
 
 
     private int getChoice() {
-        System.out.println("1. Fetch one SE sale - Urany\n2. Fetch multiple SE sales - server streaming\n3. Fetch multiple SE sales batched - client streaming");
+        System.out.println(
+                """
+                        1. Fetch one SE sale - Urany
+                        2. Fetch multiple SE sales - server streaming
+                        3. Fetch multiple SE sales batched - client streaming
+                        4. Build package - bidirectional streaming""");
         return scanner.nextInt();
     }
 
