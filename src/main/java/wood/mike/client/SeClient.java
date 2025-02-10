@@ -180,7 +180,7 @@ public class SeClient {
     private int getChoice() {
         System.out.println(
                 """
-                        1. Fetch one SE sale - Urany
+                        1. Fetch one SE sale - Unary
                         2. Fetch multiple SE sales - server streaming
                         3. Fetch multiple SE sales batched - client streaming
                         4. Build package - bidirectional streaming""");
