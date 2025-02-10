@@ -18,7 +18,7 @@ class SeServer(SE_pb2_grpc.SecretEscapesServicer):
     def GetAllSeSales(self, request, context):
         print(f"GetAllSeSales called {request}")
 
-        for i in range(1, 3):
+        for i in range(1, 5):
             se_sale_reply = SE_pb2.SeSaleReply()
             db_sale = mock_sales[i]
             se_sale_reply.id = db_sale["id"]
